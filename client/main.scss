@@ -1,0 +1,17 @@
+.hidden {
+	display : none !important;
+}
+
+.player-name-container {
+	text-align : center;
+}
+
+.main-container {
+	margin-top              : 20px;
+	display                 : -webkit-flex;
+	display                 : flex;
+	-webkit-flex-direction  : row;
+	flex-direction          : row;
+	-webkit-justify-content : center;
+	justify-content         : cetner;
+}

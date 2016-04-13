@@ -1,15 +1,17 @@
 "use strict";
 
-var gulp = require('gulp');
-var scss = require('gulp-scss');
+let gulp = require('gulp');
+let sass = require('gulp-sass');
 
-gulp.task('scss', function() {
+gulp.task('default', ['watch']);
+
+gulp.task('scss', () => {
 	return gulp
-			.src(['client/*.scss'])
-			.pipe(scss())
-			.pipe(gulp.dest('client/build'));
+			.src([`${__dirname}/client/*.scss`])
+			.pipe(sass())
+			.pipe(gulp.dest(`${__dirname}/client/build`));
 });
 
-gulp.task('watch', function() {
-	gulp.watch('client/*.scss', ['scss']);
+gulp.task('watch', () => {
+	gulp.watch(`${__dirname}/client/*.scss`, ['scss']);
 });
