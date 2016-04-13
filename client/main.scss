@@ -4,14 +4,17 @@
 
 .player-name-container {
 	text-align : center;
+
+	.player-name-form {
+		margin-bottom : 15px;
+	}
 }
 
 .main-container {
-	margin-top              : 20px;
-	display                 : -webkit-flex;
-	display                 : flex;
-	-webkit-flex-direction  : row;
-	flex-direction          : row;
-	-webkit-justify-content : center;
-	justify-content         : cetner;
+
+	.waiting-users-container {
+		.player-name {
+			padding-top : 10px;
+		}
+	}
 }
