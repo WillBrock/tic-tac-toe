@@ -14,12 +14,16 @@
 		document.querySelector('.player-name-form').className += " hidden";
 	});
 
+	// Challange a user to a game
+	document.querySelector('.play-button', function() {
+		let player_id = this.getAttribute('data-player-id');
+
+		// Remove the current user and challange user from the awaiting user list
+	});
+
 	// List of all players wanting to play a game
 	socket.on('awaiting-players', (players) => {
-		console.log(players);
-		console.log('awaiting_players');
-
-		setAwatingPlayers(players);
+		setAwatingPlayers(players, true);
 	});
 
 	// Add new player to the awaiting player list
@@ -33,22 +37,19 @@
 		setAwatingPlayers(player_object);
 	});
 
-	// Challenge an awaiting player to a game
-	/*
-	document.querySelector('.challenge-player').addEventListener('click', () => {
+	socket.on('delete-player', (player_id) => {
+		let player_class = player_id.replace(/\/|#/g, '');
+		// Query selector doesn't like / or #
+		let element      = document.querySelector(`.prefix-${player_class}`);
 
-		socket.emit('challenge-player', () => {
-
-		});
-
+		element.parentNode.removeChild(element);
 	});
-	*/
 
-	function setAwatingPlayers(players) {
+	function setAwatingPlayers(players, all = false) {
 		let container = document.querySelector('.waiting-users-container');
 		let children  = document.querySelectorAll('.generated-item');
 
-		if(children.length !== 0) {
+		if(children.length !== 0 && all) {
 			while(children[0]) {
 				children[0].parentNode.removeChild(children[0]);
 			}
@@ -59,8 +60,9 @@
 			let cloned_item    = document.querySelector('.player-item-hidden').cloneNode(true);
 			let button_element = cloned_item.querySelector('.play-button');
 			let name_element   = cloned_item.querySelector('.player-name');
+			let player_class   = player_id.replace(/\/|#/g, '');
 
-			cloned_item.className  = "item generated-item";
+			cloned_item.className  = `item generated-item prefix-${player_class}`;
 			name_element.innerText = player.player_name;
 			button_element.setAttribute('data-player-id', player.id);
 
