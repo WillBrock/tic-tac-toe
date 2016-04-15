@@ -2,19 +2,62 @@
 	display : none !important;
 }
 
+.ui.list>.item [class*="right floated"] {
+	margin : 0 !important;
+}
+
 .player-name-container {
+	margin : 25px 0 15px 0;
 	text-align : center;
 
 	.player-name-form {
-		margin-bottom : 15px;
+		margin-bottom : 25px;
 	}
 }
 
 .main-container {
+	margin-top              : 25px;
+	display                 : -webkit-flex;
+	display                 : flex;
+	-webkit-flex-direction  : row;
+	flex-direction          : row;
+	-webkit-justify-content : center;
+	justify-content         : center;
 
 	.waiting-users-container {
 		.player-name {
 			padding-top : 10px;
 		}
 	}
+
+	.column {
+		margin : 0 25px;
+	}
+
+	.tic-tac-toe-container {
+		display                : -webkit-flex;
+		display                : flex;
+		-webkit-flex-direction : column;
+		flex-direction         : column;
+
+		.tic-tac-toe-rows {
+			display                : -webkit-flex;
+			display                : flex;
+			-webkit-flex-direction : row;
+			flex-direction         : row;
+
+			.square {
+				background : #99ffcc;
+				width      : 50px !important;
+				height     : 50px !important;
+				border     : 1px solid gray;
+
+				&:hover {
+					cursor : pointer;
+				}
+			}
+		}
+	}
+
+
 }
