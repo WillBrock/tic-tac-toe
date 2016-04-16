@@ -59,7 +59,7 @@
 		let player_object = {};
 		player_object[player.id] = {
 			id          : player.id,
-			player_name : player.player_name
+			player_name : player.name
 		}
 
 		setAwatingPlayers(player_object);
@@ -73,8 +73,22 @@
 		element.parentNode.removeChild(element);
 	});
 
-	socket.on('test', (msg) => {
+	// Alert a user that they have been challenged and the game has started
+	// The player that challenged will make the first move
+	socket.on('player-challenged', (player) => {
 		console.log(msg);
+		let challenger_container = document.querySelector('.currently-playing-container');
+		let challenger_field     = document.querySelector('.currently-playing');
+
+		// Remove the hidden class
+		challenger_container.className = "currently-playing-container";
+
+		challenger_field.innerText = player.name;
+	});
+
+	// Update the board after a player has taken a turn
+	socket.on('update-turn', (data) => {
+
 	});
 
 	function challangePlayer() {

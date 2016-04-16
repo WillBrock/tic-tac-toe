@@ -21,8 +21,8 @@ module.exports = (io) => {
 		// New player enters their name
 		client.on('add-player', (player_name) => {
 			awaiting_players[client.id] = {
-				id          : client.id,
-				player_name : player_name
+				id   : client.id,
+				name : player_name
 			};
 
 			client.broadcast.emit('player-added', awaiting_players[client.id]);
@@ -33,7 +33,7 @@ module.exports = (io) => {
 			// Need to create the new game room
 
 			// Emit to the accepting user that someone has challenged them
-			io.sockets.connected[accepting_user].emit('test', 'blah');
+			io.sockets.connected[accepting_user].emit('player-challenged', 'blah');
 		});
 
 		// A player takes a turn

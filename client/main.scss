@@ -10,6 +10,16 @@
 	margin : 25px 0 15px 0;
 	text-align : center;
 
+	.currently-playing-container {
+		font-weight : bold;
+		color       : #0000cc;
+	}
+
+	.your-turn {
+		font-weight : bold;
+		color       : 00ff00;
+	}
+
 	.player-name-form {
 		margin-bottom : 25px;
 	}
@@ -47,13 +57,14 @@
 			flex-direction         : row;
 
 			.square {
-				background : #99ffcc;
+				background : #00ffff;
 				width      : 50px !important;
 				height     : 50px !important;
-				border     : 1px solid gray;
+				border     : 1px solid #3333ff;
 
 				&:hover {
-					cursor : pointer;
+					cursor     : pointer;
+					background : #ccffe5;
 				}
 			}
 		}
