@@ -5,10 +5,6 @@ let app      = express();
 let http     = require('http').Server(app);
 let io       = require('socket.io')(http);
 let port     = 45689;
-let mongoose = require('mongoose');
-let db       = require(__dirname + '/config/db');
-
-mongoose.connect(db.url);
 
 app.use(express.static(`${__dirname}/`));
 

@@ -20,6 +20,10 @@
 		color       : 00ff00;
 	}
 
+	.waiting-your-turn {
+		font-weight : bold;
+	}
+
 	.player-name-form {
 		margin-bottom : 25px;
 	}
@@ -57,14 +61,25 @@
 			flex-direction         : row;
 
 			.square {
-				background : #00ffff;
-				width      : 50px !important;
-				height     : 50px !important;
-				border     : 1px solid #3333ff;
+				display           : -webkit-box;
+				display           : box;
+				-webkit-box-pack  : center;
+				-webkit-box-align : center;
+				box-pack          : center;
+				box-align         : center;
+				background        : #00ffff;
+				width             : 50px !important;
+				height            : 50px !important;
+				border            : 1px solid #3333ff;
+				font-weight       : bold;
 
 				&:hover {
 					cursor     : pointer;
 					background : #ccffe5;
+				}
+
+				span {
+					display : inline-block;
 				}
 			}
 		}

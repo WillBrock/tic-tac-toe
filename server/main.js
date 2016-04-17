@@ -2,8 +2,7 @@ module.exports = (io) => {
 	"use strict";
 
 	let awaiting_players = {};
-	let User             = require(`${__dirname}/models/User`);
-	let client_id        = null;
+	let active_games     = {};
 
 	io.on('connection', (client) => {
 
@@ -30,15 +29,32 @@ module.exports = (io) => {
 
 		// One player challanges another
 		client.on('challange-player', (accepting_user) => {
+			let opponent = awaiting_players[client.id];
+			let room     = client.id;
+
+			active_games[client.id] = {
+				room : room
+			};
+
+			active_games[accepting_user] = {
+				room : room
+			};
+
 			// Need to create the new game room
+			client.join(room);
+			io.sockets.connected[accepting_user].join(room);
 
 			// Emit to the accepting user that someone has challenged them
-			io.sockets.connected[accepting_user].emit('player-challenged', 'blah');
+			io.sockets.connected[accepting_user].emit('player-challenged', {
+				id   : client.id,
+				name : opponent.name
+			});
 		});
 
-		// A player takes a turn
+		// Player takes a turn
 		client.on('take-turn', (data) => {
-
+			let room = active_games[client.id].room;
+			client.broadcast.in(room).emit('update-turn', data);
 		});
 	});
 
