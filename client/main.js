@@ -63,13 +63,13 @@
 		player_letter = 'O';
 
 		setOpponentName(opponent.name);
-		toggleText('waiting-your-turn');
+		toggleText('waiting-your-turn', 'your-turn');
 	});
 
 	// Update the board after a player has taken a turn
 	socket.on('update-turn', (data) => {
 		markBoard(data.letter, data.cell);
-		toggleText('waiting-your-turn');
+		toggleText('your-turn', 'waiting-your-turn');
 
 		current_turn = true;
 	});
@@ -83,7 +83,7 @@
 		console.log('challange function');
 		socket.emit('challange-player', player_id);
 
-		toggleText('your-turn');
+		toggleText('your-turn', 'waiting-your-turn');
 		current_turn = true;
 	}
 
@@ -93,6 +93,10 @@
 
 		if(children.length !== 0 && all) {
 			while(children[0]) {
+				if(!children[0].parentNode) {
+					break;
+				}
+
 				children[0].parentNode.removeChild(children[0]);
 			}
 		}
@@ -125,7 +129,7 @@
 		}
 
 		markBoard(player_letter, cell);
-		toggleText('waiting-your-turn');
+		toggleText('waiting-your-turn', 'your-turn');
 
 		socket.emit('take-turn', {
 			cell   : cell,
@@ -133,7 +137,7 @@
 		});
 
 		// Check for a winner
-		let winner = checkWinner();
+		let winner = isWinner();
 
 		current_turn = false;
 	}
@@ -155,13 +159,64 @@
 		}
 	}
 
-	function toggleText(class_name) {
+	function toggleText(class_name, hidden_class_name) {
 		let turn       = document.querySelector(`.${class_name}`);
 		turn.className = class_name;
+
+		let hidden       = document.querySelector(`.${hidden_class_name}`);
+		hidden.className += ' hidden';
 	}
 
-	function checkWinner() {
+	function isWinner() {
+		let squares = document.querySelectorAll('.square');
 
+		// Loop through each win combination
+		for(let i = 0; i < wins.length; i++) {
+			let win     = wins[i];
+			let matches = 0;
+
+			// Loop through each value in the win combination
+			for(let x = 0; x < wins[x].length; x++) {
+				let win_value       = +win[x];
+				let existing_letter = false;
+
+				// Loop through the squares
+				for(let z = 0; z < squares.length; z++) {
+					let square = squares[z];
+					let letter = square.getAttribute('data-value');
+					let cell   = +square.getAttribute('data-cell');
+
+					// If there has not been any moves on this cell, nothing to do
+					if(!letter) {
+						continue;
+					}
+
+					// If we've already used a letter and the current letter doesn't match,
+					// Then we don't have a win
+					if(existing_letter && existing_letter != letter) {
+						continue;
+					}
+
+					// Nothing to do if the value doesn't match the cell
+					if(win_value !== cell) {
+						continue;
+					}
+
+					// If we get here we have a match
+					existing_letter = letter;
+
+					// If matches gets to 3, we have a winner
+					matches++;
+				}
+			}
+
+			// Here we can mark as won
+			if(matches === 3) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	function setOpponentName(name) {

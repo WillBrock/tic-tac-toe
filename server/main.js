@@ -32,6 +32,7 @@ module.exports = (io) => {
 			let opponent = awaiting_players[client.id];
 			let room     = client.id;
 
+			// Add players to the active games
 			active_games[client.id] = {
 				room : room
 			};
@@ -40,9 +41,16 @@ module.exports = (io) => {
 				room : room
 			};
 
+			// Delete the users from the awaiting players list
+			delete awaiting_players[client.id];
+			delete awaiting_players[accepting_user];
+
 			// Need to create the new game room
 			client.join(room);
 			io.sockets.connected[accepting_user].join(room);
+
+			// Send the updated awaiting players list
+			io.in(room).emit('awaiting-players', awaiting_players);
 
 			// Emit to the accepting user that someone has challenged them
 			io.sockets.connected[accepting_user].emit('player-challenged', {
