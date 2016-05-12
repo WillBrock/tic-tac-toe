@@ -24,7 +24,7 @@
 		let player_name_input = document.querySelector('.player-name');
 
 		socket.emit('add-player', player_name_input.value);
-		document.querySelector('.player-name-form').className += " hidden";
+		document.querySelector('.player-name-form').classList.add('hidden');
 	});
 
 	// Click a cell on the board
@@ -71,7 +71,13 @@
 		markBoard(data.letter, data.cell);
 		toggleText('your-turn', 'waiting-your-turn');
 
-		current_turn = true;
+		if(data.win) {
+			markWinner(false);
+		}
+		else {
+			current_turn = true;
+		}
+
 	});
 
 	function challangePlayer() {
@@ -129,15 +135,23 @@
 		}
 
 		markBoard(player_letter, cell);
-		toggleText('waiting-your-turn', 'your-turn');
-
-		socket.emit('take-turn', {
-			cell   : cell,
-			letter : player_letter
-		});
 
 		// Check for a winner
 		let winner = isWinner();
+
+		if(winner) {
+			markWinner(true);
+		}
+
+		socket.emit('take-turn', {
+			cell   : cell,
+			letter : player_letter,
+			win    : winner
+		});
+
+		if(!winner) {
+			toggleText('waiting-your-turn', 'your-turn');
+		}
 
 		current_turn = false;
 	}
@@ -161,10 +175,10 @@
 
 	function toggleText(class_name, hidden_class_name) {
 		let turn       = document.querySelector(`.${class_name}`);
-		turn.className = class_name;
+		turn.classList.remove('hidden');
 
 		let hidden       = document.querySelector(`.${hidden_class_name}`);
-		hidden.className += ' hidden';
+		hidden.classList.add('hidden');
 	}
 
 	function isWinner() {
@@ -172,13 +186,13 @@
 
 		// Loop through each win combination
 		for(let i = 0; i < wins.length; i++) {
-			let win     = wins[i];
-			let matches = 0;
+			let win             = wins[i];
+			let matches         = 0;
+			let existing_letter = false;
 
 			// Loop through each value in the win combination
 			for(let x = 0; x < wins[x].length; x++) {
-				let win_value       = +win[x];
-				let existing_letter = false;
+				let win_value = +win[x];
 
 				// Loop through the squares
 				for(let z = 0; z < squares.length; z++) {
@@ -193,7 +207,7 @@
 
 					// If we've already used a letter and the current letter doesn't match,
 					// Then we don't have a win
-					if(existing_letter && existing_letter != letter) {
+					if(existing_letter && existing_letter !== letter) {
 						continue;
 					}
 
@@ -219,12 +233,26 @@
 		return false;
 	}
 
+	function markWinner(winner) {
+		let playing_fields = document.querySelectorAll('.playing-fields');
+		let result_field   = document.querySelector('.winning-result');
+		let winning_text   = winner ? 'You win!' : 'You loose!';
+
+		for(let i = 0; i < playing_fields.length; i++) {
+			let field = playing_fields[i];
+			field.classList.add('hidden');
+		}
+
+		result_field.innerText = winning_text;
+		result_field.classList.remove('hidden');
+	}
+
 	function setOpponentName(name) {
 		let challenger_container = document.querySelector('.currently-playing-container');
 		let challenger_field     = document.querySelector('.currently-playing');
 
 		// Remove the hidden class
-		challenger_container.className = 'currently-playing-container';
+		challenger_container.classList.remove('hidden');
 
 		challenger_field.innerText = name;
 	}
