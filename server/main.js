@@ -64,6 +64,11 @@ module.exports = (io) => {
 			let room = active_games[client.id].room;
 			client.broadcast.in(room).emit('update-turn', data);
 		});
+
+		// @todo Game over
+		client.on('game-over', (data) => {
+
+		});
 	});
 
 };
