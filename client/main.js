@@ -43,11 +43,12 @@
 		player_object[player.id] = {
 			id   : player.id,
 			name : player.name
-		}
+		};
 
 		setAwatingPlayers(player_object);
 	});
 
+	// Removes a player from the awaiting players list
 	socket.on('delete-player', (player_id) => {
 		let player_class = player_id.replace(/\/|#/g, '');
 		// Query selector doesn't like / or #
@@ -62,6 +63,7 @@
 		// Set the opponents letter to O
 		player_letter = 'O';
 
+		clearBoard();
 		setOpponentName(opponent.name);
 		toggleText('waiting-your-turn', 'your-turn');
 	});
@@ -77,22 +79,32 @@
 		else {
 			current_turn = true;
 		}
-
 	});
 
+	/**
+	 * Player challanges another player to a game
+	 * @return void
+	 */
 	function challangePlayer() {
 		let player_id   = this.getAttribute('data-player-id');
 		let player_name = this.getAttribute('data-player-name');
 
+		// Clear existing marks from previous games
+		clearBoard();
+
 		setOpponentName(player_name);
 
-		console.log('challange function');
 		socket.emit('challange-player', player_id);
 
 		toggleText('your-turn', 'waiting-your-turn');
 		current_turn = true;
 	}
 
+	/**
+	 * Displays all players that are wanting to play
+	 * @param object  players
+	 * @param bool    all
+	 */
 	function setAwatingPlayers(players, all = false) {
 		let container = document.querySelector('.waiting-users-container');
 		let children  = document.querySelectorAll('.generated-item');
@@ -125,6 +137,10 @@
 		}
 	}
 
+	/**
+	 * A player makes a move
+	 * @return void
+	 */
 	function clickBoard() {
 		let value = this.getAttribute('data-value');
 		let cell  = this.getAttribute('data-cell');
@@ -156,6 +172,12 @@
 		current_turn = false;
 	}
 
+	/**
+	 * Mark the board with a players turn
+	 * @param  text     letter either X or O
+	 * @param  int      cell   position on the board
+	 * @return void
+	 */
 	function markBoard(letter, cell) {
 		let squares       = document.querySelectorAll('.square');
 		let element       = document.createElement('span');
@@ -173,6 +195,12 @@
 		}
 	}
 
+	/**
+	 * Toggles the text when a player takes a turn
+	 * @param  {[type]} class_name        [description]
+	 * @param  {[type]} hidden_class_name [description]
+	 * @return {[type]}                   [description]
+	 */
 	function toggleText(class_name, hidden_class_name) {
 		let turn       = document.querySelector(`.${class_name}`);
 		turn.classList.remove('hidden');
@@ -181,6 +209,10 @@
 		hidden.classList.add('hidden');
 	}
 
+	/**
+	 * Determine if there is a winning combination on the board
+	 * @return bool [description]
+	 */
 	function isWinner() {
 		let squares = document.querySelectorAll('.square');
 
@@ -233,6 +265,23 @@
 		return false;
 	}
 
+	/**
+	 * Clear the board of existing marks from previous games
+	 * @return void
+	 */
+	function clearBoard() {
+		let squares = document.querySelectorAll('.square');
+		for(let i = 0; i < squares.length; i++) {
+			let square = squares[i];
+			square.setAttribute('data-value', null);
+		}
+	}
+
+	/**
+	 * Display the text that a user has either won or lost
+	 * @param  bool
+	 * @return void
+	 */
 	function markWinner(winner) {
 		let playing_fields = document.querySelectorAll('.playing-fields');
 		let result_field   = document.querySelector('.winning-result');
@@ -247,6 +296,10 @@
 		result_field.classList.remove('hidden');
 	}
 
+	/**
+	 * Sets the name of a players opponent
+	 * @param text name opponent
+	 */
 	function setOpponentName(name) {
 		let challenger_container = document.querySelector('.currently-playing-container');
 		let challenger_field     = document.querySelector('.currently-playing');
