@@ -4,7 +4,7 @@ let express  = require('express');
 let app      = express();
 let http     = require('http').Server(app);
 let io       = require('socket.io')(http);
-let port     = 45689;
+let port     = 12345;
 
 app.use(express.static(`${__dirname}/`));
 
