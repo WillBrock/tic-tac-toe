@@ -1,0 +1,21 @@
+{
+  "name": "tic_tac_toe",
+  "version": "0.0.0",
+  "authors": [
+    "Will Brock <wpbrock@gmail.com>"
+  ],
+  "description": "Real time tic tac toe",
+  "license": "MIT",
+  "homepage": "tic-tac-toe.willbrock.me",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "semantic": "~2.1.8",
+    "socket.io-client": "~1.4.5"
+  }
+}
